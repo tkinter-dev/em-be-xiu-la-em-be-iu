@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine Surprise</title>
+    <style>
+		body {
+			background-color: #f5c6cb;
+			color: #4a4a4a;
+			font-family: 'Arial', sans-serif;
+			text-align: center;
+			padding: 20px;
+			background-image: url('https://www.transparenttextures.com/patterns/pw-maze-light.png');
+			background-size: cover;
+			margin: 0;
+		}
+
+		h1 {
+			color: #d9534f;
+			font-size: 28px;
+			margin-bottom: 15px;
+		}
+
+		.game, .quiz {
+			margin-bottom: 15px;
+		}
+
+		.box {
+			position: relative;
+			width: 150px;
+			height: 150px;
+			margin: 50px auto;
+			cursor: pointer;
+			background-color: #ff6b81;
+			box-shadow: 0px 0px 15px rgba(255, 0, 0, 0.8);
+			transition: transform 0.4s;
+			border-radius: 15px;
+		}
+
+		.box:hover {
+			transform: scale(1.05);
+		}
+
+		.message {
+			display: none;
+			font-size: 20px;
+			margin-top: 15px;
+			color: #d9534f;
+		}
+
+		.hidden {
+			display: none;
+		}
+
+		.animation {
+			font-size: 24px;
+			color: #ffcc00;
+			position: absolute;
+			animation: floatUp 2.5s linear;
+		}
+
+		@keyframes floatUp {
+			from { transform: translateY(0); opacity: 1; }
+			to { transform: translateY(-80px); opacity: 0; }
+		}
+
+		#typingMessage {
+			font-size: 20px;
+			white-space: pre-wrap;
+			overflow: hidden;
+			border-right: 2px solid white;
+			width: 0;
+			animation: typing 2.5s steps(30, end) forwards;
+		}
+
+		@keyframes typing {
+			from { width: 0; }
+			to { width: 100%; }
+		}
+
+		button {
+			background-color: #d9534f;
+			border: none;
+			color: white;
+			padding: 10px 20px;
+			font-size: 16px;
+			cursor: pointer;
+			border-radius: 5px;
+			margin: 5px;
+			transition: background-color 0.3s;
+		}
+
+		button:hover {
+			background-color: #c9302c;
+		}
+
+		/* Đảm bảo hiển thị tốt trên iPhone */
+		@media (max-width: 414px) {
+			body {
+				padding: 10px;
+			}
+			h1 {
+				font-size: 24px;
+			}
+			.box {
+				width: 120px;
+				height: 120px;
+				margin: 30px auto;
+			}
+			.message {
+				font-size: 18px;
+			}
+			button {
+				font-size: 14px;
+				padding: 8px 16px;
+			}
+		}
+    </style>
+</head>
+<body>
+    <h1>Mini Game: Thử thách tình yêu 💕</h1>
+    <div class="quiz" id="quiz1">
+        <p>Câu hỏi 1: Lần đầu tiên chúng ta đi chơi là ở đâu?</p>
+        <button onclick="checkAnswer(1, '1')">1. Quán cà phê ☕</button>
+        <button onclick="checkAnswer(1, '2')">2. Công viên 🌳</button>
+        <button onclick="checkAnswer(1, '3')">3. Rạp chiếu phim 🎬</button>
+		<button onclick="checkAnswer(1, '4')">4. Quán cơm 🍽️</button>
+		<button onclick="checkAnswer(1, '5')">5. Cảng Yokohama 🚢</button>
+		<button onclick="checkAnswer(1, '6')">6. Biển Okinawa 🌊</button>
+		<button onclick="checkAnswer(1, '7')">7. Núi Tsukuba ⛰️</button>
+		<button onclick="checkAnswer(1, '8')">8. Khu vui chơi Huis Ten Bosch 🎡</button>
+		<button onclick="checkAnswer(1, '9')">9. Nhà em 🏠</button>
+		<button onclick="checkAnswer(1, '10')">10. Đi dạo phố 👩‍🦰</button>
+        <p id="quizMessage1"></p>
+    </div>
+
+    <div class="quiz hidden" id="quiz2">
+        <p>Câu hỏi 2: Món ăn yêu thích của anh là gì?</p>
+        <button onclick="checkAnswer(2, '1')">1. Sushi 🍣</button>
+        <button onclick="checkAnswer(2, '2')">2. Tempura 🍤</button>
+		<button onclick="checkAnswer(2, '3')">3. Pizza 🍕</button>
+		<button onclick="checkAnswer(2, '4')">4. Hamburger 🍔</button>
+		<button onclick="checkAnswer(2, '5')">5. Ice Cream 🍦</button>
+		<button onclick="checkAnswer(2, '6')">6. Taco 🌮</button>
+		<button onclick="checkAnswer(2, '7')">7. Sashimi 👩‍🦰</button>
+		<button onclick="checkAnswer(2, '8')">8. Burrito 🌯</button>
+		<button onclick="checkAnswer(2, '9')">9. Steak 🥩</button>
+		<button onclick="checkAnswer(2, '10')">10. Pasta 🍝</button>
+		<button onclick="checkAnswer(2, '11')">11. Salad 🥗</button>
+		<button onclick="checkAnswer(2, '12')">12. Cakes 🍰</button>
+        <p id="quizMessage2"></p>
+    </div>
+
+	<!-- Thông báo bên trên hộp quà -->
+	<p id="giftMessage" style="display: none; font-weight: bold;"></p>
+    <div class="box hidden" onclick="openGift()"></div>
+    <div class="message" id="message"></div>
+    <audio id="bgMusic" src="https://www.bensound.com/bensound-music/bensound-love.mp3" loop></audio>
+	<!-- Thông báo kết thúc dưới hộp quà -->
+	<p id="endMessage" style="display: none; font-size: 24px; font-weight: bold; color: #d9534f;"></p>
+	 
+    <script>
+		let answered1 = false;
+		let answered2 = false;
+
+		function checkAnswer(quiz, choice) {
+			const now = new Date().getTime();
+
+			if (quiz === 1) {
+				let lockTime = localStorage.getItem("quiz1_lock");
+				if (lockTime && now - lockTime < 300000) {
+					alert("Em đã chọn sai, vui lòng chờ 5 phút rồi thử lại! ⏳");
+					return;
+				}
+
+				const messageElement = document.getElementById('quizMessage1');
+				if (choice === '10') {
+					messageElement.innerText = "Đúng rồi! Chuyển sang câu hỏi tiếp theo! 🎉";
+					setTimeout(() => {
+						document.getElementById('quiz1').style.display = 'none';
+						document.getElementById('quiz2').style.display = 'block';
+					}, 2000);
+				} else {
+					messageElement.innerText = "Sai rồi, thử lại sau 5 phút! 😜";
+					localStorage.setItem("quiz1_lock", now);
+				}
+				setTimeout(() => {
+					messageElement.innerText = "";
+				}, 2000);
+			} else if (quiz === 2) {
+				let lockTime = localStorage.getItem("quiz2_lock");
+				if (lockTime && now - lockTime < 300000) {
+					alert("Bạn đã chọn sai, vui lòng chờ 5 phút rồi thử lại! ⏳");
+					return;
+				}
+
+				const messageElement = document.getElementById('quizMessage2');
+				const giftMessage = document.getElementById('giftMessage');
+				const giftBox = document.querySelector('.box');
+
+				if (choice === '7') {
+					messageElement.innerText = "Đúng rồi! Đợi chút nhé!!! ⏳";
+					
+					// Hiển thị thông báo phía trên hộp quà
+					setTimeout(() => {
+						giftMessage.innerText = "Nhấp vào hộp quà để mở! 🎁";
+						giftMessage.style.display = 'block';
+
+						// Hiển thị hộp quà
+						giftBox.classList.remove('hidden');
+						giftBox.style.display = 'block';
+
+						document.getElementById('quiz2').style.display = 'none';
+					}, 2000);
+				} else {
+					messageElement.innerText = "Sai rồi, thử lại sau 5 phút! 😜";
+					localStorage.setItem("quiz2_lock", now);
+				}
+			}
+		}
+
+
+        function openGift() {
+			document.querySelector('.box').style.display = 'none';
+			let messageText = [
+				"Anh yêu em hơn cả cơm sườn! 😘", 
+				"Em là ánh sáng trong cuộc đời anh! ✨", 
+				"Mỗi ngày có em là một ngày hạnh phúc! 💖", 
+				"Chỉ cần có em bên cạnh, anh cảm thấy cả thế giới này trở nên tươi đẹp hơn! 🌍", 
+				"Em là người duy nhất khiến anh mỉm cười mỗi ngày! 😄", 
+				"Với em, mỗi khoảnh khắc trở thành kỷ niệm đáng trân trọng! 💎", 
+				"Anh sẽ bảo vệ và yêu thương em, như lời hứa từ tận đáy lòng mình! ❤️"
+			];
+			let messageContainer = document.getElementById('message');
+			messageContainer.innerHTML = '';
+			document.getElementById('message').style.display = 'block';
+			let textIndex = 0;
+
+			function typeEffect() {
+				if (textIndex < messageText.length) {
+					let typingMessage = document.createElement('div');
+					typingMessage.classList.add('typingEffect');
+					typingMessage.innerText = '';
+					messageContainer.appendChild(typingMessage);
+
+					let line = messageText[textIndex];
+					let charIndex = 0;
+
+					function typeChar() {
+						if (charIndex < line.length) {
+							typingMessage.innerHTML += line[charIndex];
+							charIndex++;
+							setTimeout(typeChar, 80);
+						} else {
+							textIndex++;
+							setTimeout(typeEffect, 800);
+						}
+					}
+					typeChar();
+				}
+			}
+			typeEffect();
+			createFloatingHearts();
+			document.getElementById('bgMusic').play();
+
+			// Hiển thị thông báo kết thúc
+			setTimeout(() => {
+				let endMessage = document.getElementById('endMessage');
+				endMessage.innerText = "Cảm ơn em vì tất cả! 💖";
+				endMessage.style.display = 'block';
+			}, 35000);  // Hiển thị thông báo sau khi đã hoàn tất các thông điệp
+		}
+
+        function createFloatingHearts() {
+            setInterval(function() {
+                for (let i = 0; i < 10; i++) {
+                    let heart = document.createElement('div');
+                    heart.innerHTML = '❤️';
+                    heart.classList.add('animation');
+
+                    heart.style.position = 'absolute';
+                    heart.style.left = Math.random() * (window.innerWidth - 50) + 'px';
+                    heart.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+                    heart.style.fontSize = '24px';
+
+                    document.body.appendChild(heart);
+
+                    setTimeout(function() {
+                        heart.style.animation = 'floatUp 3s linear forwards';
+                    }, 100);
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
